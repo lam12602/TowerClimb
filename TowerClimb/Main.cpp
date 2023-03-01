@@ -2,6 +2,7 @@
 #include "Game.h"
 #include <stdlib.h>
 #include <time.h>
+#include "AssetManager.h"
 
 
 int main()
@@ -15,6 +16,9 @@ int main()
     Game gameInstance;
 
     gameInstance.RunGameLoop();
+
+
+    AssetManager::DestroyAllAssets();
 
     //if we get here game is over end program by returning
 
