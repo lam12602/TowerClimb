@@ -19,6 +19,7 @@ sf::Texture& AssetManager::RequestTexture(std::string textureName)
 
 }
 
+
 void AssetManager::DestroyAllAssets()
 {
 	textures.clear();
