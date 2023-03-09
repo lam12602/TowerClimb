@@ -42,7 +42,14 @@ void Player::Update(sf::Time frameTime)
 
 	case PhysicsType::BACKWARD_EULER:
 		{
+			UpdateAcceleration();
 
+			velocity = velocity + acceleration * frameTime.asSeconds();
+
+			//TODO drag
+			velocity = velocity * DRAG_MULT;
+
+			position = position + velocity * frameTime.asSeconds();
 		}
 		break;
 
