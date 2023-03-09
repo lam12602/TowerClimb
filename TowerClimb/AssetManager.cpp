@@ -2,18 +2,18 @@
 
 std::map<std::string, sf::Texture> AssetManager::textures;
 
-sf::Texture& AssetManager::RequestTexture(std::string textureName)
+sf::Texture& AssetManager::RequestTexture(std::string assetName)
 {
 	// TODO: insert return statement here
-	auto pairFound = textures.find(textureName);
+	auto pairFound = textures.find(assetName);
 	if (pairFound != textures.end())
 	{
 		return pairFound->second;
 	}
 	else
 	{
-		sf::Texture& newTexture = textures[textureName];
-		newTexture.loadFromFile(textureName);
+		sf::Texture& newTexture = textures[assetName];
+		newTexture.loadFromFile(assetName);
 		return newTexture;
 	}
 

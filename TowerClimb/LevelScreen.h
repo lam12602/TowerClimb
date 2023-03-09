@@ -1,6 +1,7 @@
 #pragma once
 #include "Screen.h"
 #include <SFML/Graphics.hpp>
+#include "Player.h"
 
 class LevelScreen :
     public Screen
@@ -15,7 +16,7 @@ public:
 
 
 private:
-    sf::Texture temptex;
-    sf::Sprite tempsprite;
+    
+    Player player;
 };
 
