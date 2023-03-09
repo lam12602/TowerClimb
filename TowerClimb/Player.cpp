@@ -5,12 +5,17 @@
 
 enum class PhysicsType {
 	FORWARD_EULER,
-	BACKWARD_EULER
+	BACKWARD_EULER,
+	SYMPLECTIC_EULER,
+	POSITION_VERLET,
+	VELOCITY_VERLET
+
 };
 
 Player::Player()
 	: SpriteObject()
 	,position(100, 300)
+	,twoFramOldPos(100, 300)
 	,velocity()
 	,acceleration()
 {
@@ -22,7 +27,7 @@ void Player::Update(sf::Time frameTime)
 {
 	
 	const float DRAG_MULT = 0.99f;
-	const PhysicsType physics = PhysicsType::BACKWARD_EULER;
+	const PhysicsType physics = PhysicsType::POSITION_VERLET;
 
 	switch (physics)
 	{
@@ -53,18 +58,39 @@ void Player::Update(sf::Time frameTime)
 		}
 		break;
 
+	case PhysicsType::POSITION_VERLET:
+		{
+			UpdateAcceleration();
+			
+			sf::Vector2f lastFramePos = position;
+
+			
+			position = 2.0f*position - twoFramOldPos + acceleration * frameTime.asSeconds() * frameTime.asSeconds();
+
+			twoFramOldPos = lastFramePos;
+
+		}
+		break;
+
+	case PhysicsType::VELOCITY_VERLET:
+	{
+		sf::Vector2f halfFramVelocity = velocity + acceleration * frameTime.asSeconds() / 2.0f;
+
+		position = position + halfFramVelocity * frameTime.asSeconds();
+		UpdateAcceleration();
+
+		velocity = halfFramVelocity + acceleration * frameTime.asSeconds() /2.0f;
+
+		velocity = velocity * DRAG_MULT;
+
+	}
+	break;
+
 	default:
 		break;
 	}
 
-	position = position + velocity * frameTime.asSeconds();
-	velocity = velocity + acceleration * frameTime.asSeconds();
-
-	//TODO drag
-	velocity = velocity * DRAG_MULT;
-	//TODO update acceleration
 	
-	UpdateAcceleration();
 
 	//update visual position
 	sprite.setPosition(position);
