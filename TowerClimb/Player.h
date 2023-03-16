@@ -18,7 +18,7 @@ private:
 
 
 
-    sf::Vector2f position;
+    
     sf::Vector2f twoFramOldPos;
     sf::Vector2f velocity;
     sf::Vector2f acceleration;
