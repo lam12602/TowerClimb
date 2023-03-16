@@ -18,7 +18,7 @@ private:
 
 	static std::map<std::string, sf::Texture> textures;
 	static std::map<std::string, sf::Font> fonts;
-	static std::map < std::string, sf::SoundBuffer> sounds;
+	static std::map < std::string, sf::SoundBuffer> soundBuffers;
 
 };
 

@@ -44,23 +44,19 @@ void Game::Update()
 {
 	sf::Time frameTime = gameClock.restart();
 
-
-	//TODO update current screen
-	if (currentScreen)
-	{
+	// Update current screen
+	if (currentScreen != nullptr)
 		currentScreen->Update(frameTime);
-	}
 	//TODO handel changing to other screens
 }
 
 void Game::Draw()
 {
 	window.clear();
-	
-	if (currentScreen)
-	{
+
+	// Draw current screen
+	if (currentScreen != nullptr)
 		currentScreen->Draw(window);
-	}
 
 	window.display();
 }
