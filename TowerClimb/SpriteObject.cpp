@@ -1,5 +1,6 @@
 #include "SpriteObject.h"
 #include "VectorHelper.h"
+#include <algorithm>
 
 SpriteObject::SpriteObject()
 	: sprite()
@@ -7,6 +8,7 @@ SpriteObject::SpriteObject()
 	, colliding(false)
 	, collisionoffset(0,0)
 	,collisionscale(1,1)
+	,collisionType(CollisionType::AABB)
 {
 }
 
@@ -22,23 +24,53 @@ void SpriteObject::Draw(sf::RenderTarget& target)
 
 	if (drawCollider)
 	{
-		sf::CircleShape circle;
 
-		sf::Vector2f shapePosition = GetCollisionCentre();
-		shapePosition.x -= GetCircleColliderRadius();
-		shapePosition.y -= GetCircleColliderRadius();
-
-		circle.setPosition(shapePosition);
-		circle.setRadius(GetCircleColliderRadius());
-		sf::Color collisioncolor = sf::Color::Green;
-		if (colliding)
+		switch (collisionType)
 		{
-			collisioncolor = sf::Color::Red;
-		}
-		collisioncolor.a = 100;
-		circle.setFillColor(collisioncolor);
+		case CollisionType::CIRCLE:
+			{
+			
+			
+			
+				sf::CircleShape circle;
 
-		target.draw(circle);
+				sf::Vector2f shapePosition = GetCollisionCentre();
+				shapePosition.x -= GetCircleColliderRadius();
+				shapePosition.y -= GetCircleColliderRadius();
+
+				circle.setPosition(shapePosition);
+				circle.setRadius(GetCircleColliderRadius());
+				sf::Color collisioncolor = sf::Color::Green;
+				if (colliding)
+				{
+					collisioncolor = sf::Color::Red;
+				}
+				collisioncolor.a = 100;
+				circle.setFillColor(collisioncolor);
+
+				target.draw(circle);
+			}
+			break;
+			
+		case CollisionType::AABB:
+			{
+				sf::RectangleShape rectangle;
+				sf::FloatRect bounds = GetAABB();
+				rectangle.setPosition(bounds.left, bounds.top);
+				rectangle.setSize(sf::Vector2f(bounds.width, bounds.height));
+				sf::Color collisioncolor = sf::Color::Green;
+				if (colliding)
+				{
+					collisioncolor = sf::Color::Red;
+				}
+				collisioncolor.a = 100;
+				rectangle.setFillColor(collisioncolor);
+				target.draw(rectangle);
+
+			}
+		break;
+		}
+		
 	}
 	;
 
@@ -63,17 +95,48 @@ void SpriteObject::SetPosition(float newx, float newy)
 
 bool SpriteObject::CheckCollision(SpriteObject other)
 {
+	switch (collisionType)
+	{
+	case CollisionType::CIRCLE:
+	{
+		if (other.collisionType == CollisionType::CIRCLE)
+		{
+			sf::Vector2f displacement = GetCollisionCentre() - other.GetCollisionCentre();
 
-	sf::Vector2f displacement = GetCollisionCentre() - other.GetCollisionCentre();
+			//TODO
+			float squaredistance = VectorHelper::SquareMagnitude(displacement);
 
-	//TODO
-	float squaredistance = VectorHelper::SquareMagnitude(displacement);
-
-	float combineRadii = GetCircleColliderRadius() + other.GetCircleColliderRadius();
+			float combineRadii = GetCircleColliderRadius() + other.GetCircleColliderRadius();
 
 
 
-	return squaredistance <= combineRadii * combineRadii;
+			return squaredistance <= combineRadii * combineRadii;
+		}
+		else
+		{
+			sf::Vector2f nearestPointToCirlcle = GetCollisionCentre();
+			sf::FloatRect otherAABB = other.GetAABB();
+
+			nearestPointToCirlcle.x = fmaxf(otherAABB.left, fminf(nearestPointToCirlcle.x, otherAABB.left + otherAABB.width));
+			nearestPointToCirlcle.y = fmaxf(otherAABB.top, fminf(nearestPointToCirlcle.y, otherAABB.top + otherAABB.height));
+
+			sf::Vector2f displacement = nearestPointToCirlcle - GetCollisionCentre();
+			float squareDistance = VectorHelper::SquareMagnitude(displacement);
+			float circleRadius = GetCircleColliderRadius();
+			return squareDistance <= circleRadius * circleRadius;
+		}
+		
+		
+	}
+		break;
+	case CollisionType::AABB:
+	{
+		return GetAABB().intersects(other.GetAABB());
+	}
+		break;
+
+	}
+	
 }
 
 void SpriteObject::SetColliding(bool newColliding)
@@ -111,4 +174,19 @@ float SpriteObject::GetCircleColliderRadius()
 		return bounds.height * 0.5f;
 	}
 
+}
+
+sf::FloatRect SpriteObject::GetAABB()
+{
+	sf::FloatRect bounds = sprite.getLocalBounds();
+	bounds.width = bounds.width * collisionscale.x;
+	bounds.height = bounds.height * collisionscale.y;
+
+	sf::Vector2f centre = GetCollisionCentre();
+
+
+	bounds.top = centre.y - bounds.height * 0.5f;
+	bounds.left = centre.x - bounds.width * 0.5f;
+
+	return bounds;
 }
