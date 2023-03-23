@@ -101,7 +101,7 @@ void Player::Update(sf::Time frameTime)
 
 void Player::HandelCollision(SpriteObject other)
 {
-	const float jumpSpeed = 1000;
+	const float jumpSpeed = 4000;
 	sf::Vector2f depth = GetCollisionDepth(other);
 	sf::Vector2f newPos = GetPosition();
 
@@ -130,7 +130,7 @@ void Player::HandelCollision(SpriteObject other)
 void Player::UpdateAcceleration()
 {
 	const float ACCEL = 10000;
-	const float GRAVITY = 1000;
+	const float GRAVITY = 3000;
 
 	acceleration.x = 0;
 	acceleration.y = GRAVITY;

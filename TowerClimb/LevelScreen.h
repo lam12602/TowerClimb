@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "Platform.h"
 #include"Door.h"
+#include "MovingPlatform.h"
 
 class LevelScreen :
     public Screen
@@ -22,5 +23,6 @@ private:
     Player player;
     Platform platform;
     Door door;
+    MovingPlatform testMovingPlatform;
 };
 

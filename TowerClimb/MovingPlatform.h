@@ -7,7 +7,8 @@ public:
 
     MovingPlatform(sf::Vector2f newPos1, sf::Vector2f newPos2);
 
-    virtual void Update(sf::Time frameTime) override;
+    void Update(sf::Time frameTime) override;
+    void SetPosition(sf::Vector2f newPosition) override;
 
 
 private:
