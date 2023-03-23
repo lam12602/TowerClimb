@@ -8,4 +8,5 @@ Door::Door()
 {
 	sprite.setTexture(AssetManager::RequestTexture("Assets/Graphics/Door.png"));
 	sprite.setPosition(position);
+	
 }

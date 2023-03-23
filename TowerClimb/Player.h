@@ -10,7 +10,7 @@ public:
 
     void Update(sf::Time frameTime) override;
 
-
+    void HandelCollision(SpriteObject other);
 
 private:
 

@@ -30,6 +30,7 @@ void Player::Update(sf::Time frameTime)
 	
 	const float DRAG_MULT = 10.0f;
 	const PhysicsType physics = PhysicsType::FORWARD_EULER;
+	
 
 	switch (physics)
 	{
@@ -96,6 +97,22 @@ void Player::Update(sf::Time frameTime)
 
 	//update visual position
 	
+}
+
+void Player::HandelCollision(SpriteObject other)
+{
+	sf::Vector2f depth = GetCollisionDepth(other);
+	sf::Vector2f newPos = GetPosition();
+
+	if (abs(depth.x) < abs(depth.y))
+	{
+		newPos.x += depth.x;
+	}
+	else
+	{
+		newPos.y += depth.y;
+	}
+	SetPosition(newPos);
 }
 
 void Player::UpdateAcceleration()
