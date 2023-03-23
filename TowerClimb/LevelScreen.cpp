@@ -1,42 +1,55 @@
 #include "LevelScreen.h"
 #include "AssetManager.h"
+#include "Platform.h"
+#include "MovingPlatform.h"
+#include "BreakingPlatform.h"
+#include "DeadlyPlatform.h"
 
 LevelScreen::LevelScreen(Game* newGamepointer)
 	:Screen(newGamepointer)
 	,player()
-	,platform()
-	,testMovingPlatform(sf::Vector2f(0,700),sf::Vector2f(1000,700))
+	,platforms()
 	,door()
 {
 	player.SetPosition(500, 350);
+	platforms.push_back(new Platform(sf::Vector2f(500, 500)));
+	platforms.push_back(new MovingPlatform(sf::Vector2f(500, 700),(sf::Vector2f(0, 700),(sf::Vector2f(500, 700)))));
+	platforms.push_back(new BreakingPlatform(sf::Vector2f(700, 500)));
+	platforms.push_back(new DeadlyPlatform(sf::Vector2f(700, 700)));
 	door.SetPosition(500, 350);
-	platform.SetPosition(500, 500);
-	testMovingPlatform.SetPosition(sf::Vector2f(500, 700));
 	
 }
 
 void LevelScreen::Update(sf::Time frameTime)
 {
 	player.Update(frameTime);
-	testMovingPlatform.Update(frameTime);
+
+
+	for (int i = 0; i < platforms.size(); ++i)
+	{
+		platforms[i]->Update(frameTime);
+	}
+	
+	for (int i = 0; i < platforms.size(); ++i)
+	{
+		platforms[i]->SetColliding(false);
+	}
+
 
 	player.SetColliding(false);
-	platform.SetColliding(false);
-	testMovingPlatform.SetColliding(false);
 	door.SetColliding(false);
+	for (int i = 0; i < platforms.size(); ++i)
+	{
+		if (platforms[i]->CheckCollision(player))
+		{
+			player.SetColliding(true);
+			platforms[i]->SetColliding(true);
+			player.HandelCollision(*platforms[i]);
+			platforms[i]->HandelCollision(player);
+		}
+	}
 
-	if (player.CheckCollision(platform))
-	{
-		player.SetColliding(true);
-		platform.SetColliding(true);
-		player.HandelCollision(platform);
-	}
-	if (player.CheckCollision(testMovingPlatform))
-	{
-		player.SetColliding(true);
-		testMovingPlatform.SetColliding(true);
-		player.HandelCollision(testMovingPlatform);
-	}
+	
 
 	if (player.CheckCollision(door))
 	{
@@ -47,8 +60,12 @@ void LevelScreen::Update(sf::Time frameTime)
 
 void LevelScreen::Draw(sf::RenderTarget& target)
 {
-	testMovingPlatform.Draw(target);
-	platform.Draw(target);
+	for (int i = 0; i < platforms.size(); ++i)
+	{
+		platforms[i]->Draw(target);
+	}
+
+	
 	door.Draw(target);
 	player.Draw(target);
 }
