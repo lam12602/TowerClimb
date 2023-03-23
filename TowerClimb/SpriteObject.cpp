@@ -131,7 +131,24 @@ bool SpriteObject::CheckCollision(SpriteObject other)
 		break;
 	case CollisionType::AABB:
 	{
-		return GetAABB().intersects(other.GetAABB());
+		if (other.collisionType == CollisionType::AABB)
+		{
+			return GetAABB().intersects(other.GetAABB());
+		}
+		else
+		{
+			sf::Vector2f nearestPointToCirlcle = other.GetCollisionCentre();
+			sf::FloatRect thisAABB = GetAABB();
+
+			nearestPointToCirlcle.x = fmaxf(thisAABB.left, fminf(nearestPointToCirlcle.x, thisAABB.left + thisAABB.width));
+			nearestPointToCirlcle.y = fmaxf(thisAABB.top, fminf(nearestPointToCirlcle.y, thisAABB.top + thisAABB.height));
+
+			sf::Vector2f displacement = nearestPointToCirlcle - other.GetCollisionCentre();
+			float squareDistance = VectorHelper::SquareMagnitude(displacement);
+			float circleRadius = other.GetCircleColliderRadius();
+			return squareDistance <= circleRadius * circleRadius;
+
+		}
 	}
 		break;
 
