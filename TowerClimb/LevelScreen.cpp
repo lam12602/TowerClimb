@@ -30,6 +30,7 @@ void LevelScreen::Update(sf::Time frameTime)
 	{
 
 
+
 		player.Update(frameTime);
 
 
@@ -66,6 +67,11 @@ void LevelScreen::Update(sf::Time frameTime)
 			door.HandelCollision(player);
 		}
 	}
+
+	else
+	{
+		endPanel.Update(frameTime);
+	}
 }
 
 void LevelScreen::Draw(sf::RenderTarget& target)
@@ -87,6 +93,7 @@ void LevelScreen::Draw(sf::RenderTarget& target)
 
 void LevelScreen::TriggerEndState(bool _win)
 {
-	//TODO
+	
 	gameRunning = false;
+	endPanel.StartAnimation();
 }

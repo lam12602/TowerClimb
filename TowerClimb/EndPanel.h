@@ -1,5 +1,6 @@
 #pragma once
 #include"SFML/Graphics.hpp"
+#include <xkeycheck.h>
 class EndPanel
 {
 public:
@@ -9,6 +10,7 @@ public:
 	void Draw(sf::RenderTarget& target);
 
 	void setPosition(sf::Vector2f newPosition);
+	void StartAnimation();
 
 
 
@@ -18,6 +20,9 @@ private:
 	sf::Text message;
 	sf::Vector2f position;
 	sf::RenderWindow* window;
+
+	bool animatingIn;
+	sf::Clock animationClock;
 
 };
 
