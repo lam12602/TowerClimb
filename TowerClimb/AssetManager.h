@@ -7,6 +7,8 @@ class AssetManager
 {
 public:
 
+	
+
 	static sf::Texture& RequestTexture(std::string assetName);
 	static sf::Font& RequestFont(std::string assetName);
 	static sf::SoundBuffer& RequestSound(std::string assetName);

@@ -17,6 +17,8 @@ public:
 
 	void Draw();
 
+	sf::RenderWindow* GetWindow();
+
 
 
 

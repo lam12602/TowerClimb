@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "Player.h"
 #include "Door.h"
+#include "EndPanel.h"
 
 class Platform;
 
@@ -14,6 +15,8 @@ public:
     void Update(sf::Time frameTime) override;
     void Draw(sf::RenderTarget& target) override;
 
+    void TriggerEndState(bool _win);
+
 
 
 
@@ -23,7 +26,8 @@ private:
     Player player;
     
     Door door;
-    
+    EndPanel endPanel;
+    bool gameRunning;
 
     std::vector<Platform*> platforms;
     
