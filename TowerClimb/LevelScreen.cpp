@@ -14,13 +14,7 @@ LevelScreen::LevelScreen(Game* newGamepointer)
 	,endPanel(newGamepointer->GetWindow())
 	,gameRunning(true)
 {
-	player.SetPosition(500, 350);
-	platforms.push_back(new Platform(sf::Vector2f(500, 500)));
-	platforms.push_back(new Platform(sf::Vector2f(900, 500)));
-	//platforms.push_back(new MovingPlatform(sf::Vector2f(500, 700),(sf::Vector2f(0, 700),(sf::Vector2f(500, 700)))));
-	platforms.push_back(new BreakingPlatform(sf::Vector2f(700, 500)));
-	platforms.push_back(new DeadlyPlatform(sf::Vector2f(700, 700)));
-	door.SetPosition(900, 350);
+	Restart();
 	
 }
 
@@ -71,6 +65,11 @@ void LevelScreen::Update(sf::Time frameTime)
 	else
 	{
 		endPanel.Update(frameTime);
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+		{
+			Restart();
+		}
 	}
 }
 
@@ -96,4 +95,25 @@ void LevelScreen::TriggerEndState(bool _win)
 	
 	gameRunning = false;
 	endPanel.StartAnimation();
+}
+
+void LevelScreen::Restart()
+{
+	player.SetPosition(500, 350);
+
+	for (int i = 0; i < platforms.size(); ++i)
+	{
+		delete platforms[i];
+		platforms[i] = nullptr;
+	}
+	platforms.clear();
+	platforms.push_back(new Platform(sf::Vector2f(500, 500)));
+	platforms.push_back(new Platform(sf::Vector2f(900, 500)));
+	//platforms.push_back(new MovingPlatform(sf::Vector2f(500, 700),(sf::Vector2f(0, 700),(sf::Vector2f(500, 700)))));
+	platforms.push_back(new BreakingPlatform(sf::Vector2f(700, 500)));
+	platforms.push_back(new DeadlyPlatform(sf::Vector2f(700, 700)));
+	door.SetPosition(900, 350);
+
+	gameRunning = true;
+
 }

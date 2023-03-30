@@ -25,10 +25,7 @@ EndPanel::EndPanel(sf::RenderWindow* newWindow)
 	message.setString("PRESS R TO RESTART \nOR ESCAPE TO QUIT");
 	message.setFillColor(sf::Color::Black);
 	
-	float xPos = window->getSize().x * 0.5f - background.getGlobalBounds().width * 0.5f;
-	float yPos = window->getSize().y;
-
-	setPosition(sf::Vector2f(xPos, yPos));
+	ResetPosition();
 
 }
 
@@ -82,4 +79,12 @@ void EndPanel::StartAnimation()
 {
 	animatingIn = true;
 	animationClock.restart();
+}
+
+void EndPanel::ResetPosition()
+{
+	float xPos = window->getSize().x * 0.5f - background.getGlobalBounds().width * 0.5f;
+	float yPos = window->getSize().y;
+
+	setPosition(sf::Vector2f(xPos, yPos));
 }

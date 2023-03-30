@@ -11,6 +11,7 @@ public:
 
 	void setPosition(sf::Vector2f newPosition);
 	void StartAnimation();
+	void ResetPosition();
 
 
 

@@ -22,6 +22,8 @@ public:
 
 
 private:
+
+    void Restart();
     
     Player player;
     
