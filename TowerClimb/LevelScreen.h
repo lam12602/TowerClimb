@@ -32,6 +32,8 @@ private:
     bool gameRunning;
 
     std::vector<Platform*> platforms;
+
+    sf::View camera;
     
 };
 

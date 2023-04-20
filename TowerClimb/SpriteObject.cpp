@@ -114,7 +114,7 @@ bool SpriteObject::CheckCollision(SpriteObject other)
 		{
 			sf::Vector2f displacement = GetCollisionCentre() - other.GetCollisionCentre();
 
-			//TODO
+			
 			float squaredistance = VectorHelper::SquareMagnitude(displacement);
 
 			float combineRadii = GetCircleColliderRadius() + other.GetCircleColliderRadius();
