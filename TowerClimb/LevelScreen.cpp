@@ -5,6 +5,8 @@
 #include "BreakingPlatform.h"
 #include "DeadlyPlatform.h"
 #include "Game.h"
+#include <fstream>
+#include <iostream>
 
 LevelScreen::LevelScreen(Game* newGamepointer)
 	:Screen(newGamepointer)
@@ -14,9 +16,10 @@ LevelScreen::LevelScreen(Game* newGamepointer)
 	,endPanel(newGamepointer->GetWindow())
 	,gameRunning(true)
 	,camera()
+	,currentLevel(1)
 {
 	Restart();
-	
+	//LoadLevel("Level1");
 }
 
 void LevelScreen::Update(sf::Time frameTime)
@@ -114,23 +117,115 @@ void LevelScreen::TriggerEndState(bool _win)
 	endPanel.StartAnimation();
 }
 
+bool LevelScreen::LoadNextLevel()
+{
+
+	return LoadLevel(currentLevel + 1);
+}
+
 void LevelScreen::Restart()
 {
-	player.SetPosition(500, 350);
+	LoadLevel(currentLevel);
 
+}
+
+bool LevelScreen::LoadLevel(int levelNumber)
+{
+	//construct level name from structure
+	std::string levelName = "Level" + std::to_string(levelNumber);
+
+	bool success = LoadLevel(levelName);
+	if (success)
+	{
+		currentLevel = levelNumber;
+	}
+
+	return currentLevel;
+}
+
+bool LevelScreen::LoadLevel(std::string fileName)
+{
+	//open level file
+	std::ifstream inFile;
+	std::string filePath = "Assets/Levels/" + fileName + ".txt";
+	inFile.open(filePath);
+
+	//make sure file was actually opened
+	if (!inFile)
+	{
+		//file was not opened 
+		return false;
+	}
+	//clear platforms before loading level
 	for (int i = 0; i < platforms.size(); ++i)
 	{
 		delete platforms[i];
 		platforms[i] = nullptr;
 	}
 	platforms.clear();
-	platforms.push_back(new Platform(sf::Vector2f(500, 500)));
-	platforms.push_back(new Platform(sf::Vector2f(900, 500)));
-	//platforms.push_back(new MovingPlatform(sf::Vector2f(500, 700),(sf::Vector2f(0, 700),(sf::Vector2f(500, 700)))));
-	platforms.push_back(new BreakingPlatform(sf::Vector2f(700, 500)));
-	platforms.push_back(new DeadlyPlatform(sf::Vector2f(700, 700)));
-	door.SetPosition(900, 350);
+
+	//set starting x and y cooridinates used to position objects
+	float x = 0.0f;
+	float y = 0.0f;
+
+	//define the spacing we will use for our grind
+	const float X_SPACE = 150.0f;
+	const float Y_SPACE = 150.0f;
+
+	char ch;
+
+	//each time, try to read the next character
+	//if successful execute boady of loop
+	//noskipws means our input will include white space
+	while (inFile >> std::noskipws >> ch)
+	{
+		//perform actions beaed on character
+		if (ch == ' ')
+		{
+			x += X_SPACE;
+		}
+		else if (ch == '\n')
+		{
+			y += Y_SPACE;
+			x = 0;
+
+		}
+		else if (ch == 'P')
+		{
+			player.SetPosition(x, y);
+		}
+		else if (ch == 'N')
+		{
+			platforms.push_back(new Platform(sf::Vector2f(x, y)));
+		}
+		else if (ch == 'B')
+		{
+			platforms.push_back(new BreakingPlatform(sf::Vector2f(x, y)));
+		}
+		else if (ch == 'D')
+		{
+			platforms.push_back(new DeadlyPlatform(sf::Vector2f(x, y )));
+		}
+		else if (ch == 'O')
+		{
+			door.SetPosition(x, y);
+		}
+		else if (ch == '-')
+		{
+			//do nothing
+		}
+		else
+		{
+			std::cerr << "Unrecognised character in level file:" << ch;
+		}
+	}
+
+	//close file now we are done with it
+	
+	inFile.close();
 
 	gameRunning = true;
+	//return true because we sucsessfuly loaded file
 
+	return true;
 }
